@@ -460,4 +460,52 @@ class MenuApp {
 document.addEventListener('DOMContentLoaded', () => {
   const app = new MenuApp();
   app.init();
-}); 
+});
+
+// --- Mobilde sağdan açılır toplam paneli ve butonu ---
+function createMobileTotalPanel() {
+  // Sadece bir kez ekle
+  if (document.getElementById('toggleTotalBox')) return;
+
+  // Toggle butonu
+  const toggleBtn = document.createElement('button');
+  toggleBtn.id = 'toggleTotalBox';
+  toggleBtn.className = 'toggle-total-btn';
+  toggleBtn.textContent = 'Toplam';
+  document.body.appendChild(toggleBtn);
+
+  // Paneli aç/kapa
+  toggleBtn.addEventListener('click', () => {
+    document.getElementById('totalBox').classList.toggle('open');
+  });
+
+  // Panel açıkken dışarı tıklanınca kapansın
+  document.addEventListener('click', (e) => {
+    const totalBox = document.getElementById('totalBox');
+    if (
+      window.innerWidth <= 600 &&
+      totalBox.classList.contains('open') &&
+      !totalBox.contains(e.target) &&
+      e.target !== toggleBtn
+    ) {
+      totalBox.classList.remove('open');
+    }
+  });
+}
+
+// Ekran boyutuna göre paneli yönet
+function handleResponsiveTotalBox() {
+  const totalBox = document.getElementById('totalBox');
+  if (window.innerWidth <= 600) {
+    totalBox.classList.add('slide-panel');
+    totalBox.classList.remove('open');
+    createMobileTotalPanel();
+  } else {
+    totalBox.classList.remove('slide-panel', 'open');
+    const toggleBtn = document.getElementById('toggleTotalBox');
+    if (toggleBtn) toggleBtn.remove();
+  }
+}
+
+window.addEventListener('resize', handleResponsiveTotalBox);
+document.addEventListener('DOMContentLoaded', handleResponsiveTotalBox); 
